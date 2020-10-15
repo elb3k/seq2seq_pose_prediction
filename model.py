@@ -5,7 +5,7 @@ from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Input, Dense, LSTM, TimeDistributed, Reshape
 
 
-def seq2seq_model_builder(SEQUENCES=30, JOINTS=17, DIMS=2, HIDDEN_DIM=512, EMBEDDING_SIZE=512):
+def seq2seq_model(SEQUENCES=30, JOINTS=17, DIMS=2, HIDDEN_DIM=512, EMBEDDING_SIZE=512):
   # Encoder
   encoder_inputs = Input(shape=(SEQUENCES, JOINTS, DIMS), dtype="float32")
   encoder_reshape = Reshape(target_shape=(SEQUENCES, JOINTS*DIMS)) (encoder_inputs)

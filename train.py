@@ -7,7 +7,7 @@ from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 batch_size=64
 epochs=100
 
-model = lstm_model()
+model = seq2seq_model()
 
 train_df, val_df, test_df = load_dataset()
 

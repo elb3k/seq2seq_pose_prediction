@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf
 import pandas as pd
 
 def load_dataset(path="dev2.pkl"):
@@ -36,5 +37,15 @@ def preprocess(df):
   y = np.asarray(y)
   y[:, :, :, 0] = (y[:, :, :, 0] - 960.0)/960.0
   y[:, :, :, 1] = (y[:, :, :, 1] - 540.0)/540.0
+  
+  decoder_input = np.zeros(x.shape, dtype="float32")
 
-  return x, y
+  return (x, decoder_input), y
+
+def loss(y_true, y_pred):
+
+  diff = y_true - y_pred
+  diff = tf.math.reduce_sum(tf.math.square(diff), axis=-1)
+
+  return tf.reduce_mean(diff)
+
