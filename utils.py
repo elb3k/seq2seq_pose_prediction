@@ -50,3 +50,9 @@ def loss(y_true, y_pred):
   diff = tf.math.sqrt(diff)
   return tf.reduce_mean(diff)
 
+def distance(y_true, y_pred):
+
+  diff = y_true - y_pred
+  diff = np.sum(np.square(diff), axis=-1)
+  diff = np.sqrt(diff)
+  return np.mean(diff)

@@ -3,4 +3,4 @@ weights/*
 log/*
 *.pkl
 
-.vscode/*
+.vscode
