@@ -21,7 +21,7 @@ def seq2seq_model(SEQUENCES=30, JOINTS=17, DIMS=2, HIDDEN_DIM=512, EMBEDDING_SIZ
   decoder_embedding = Dense(EMBEDDING_SIZE) (decoder_reshape)
   decoder_LSTM = LSTM(HIDDEN_DIM, return_state=True, return_sequences=True)
   decoder_outputs, _, _ = decoder_LSTM(decoder_embedding, initial_state=[state_h, state_c])
-  outputs = TimeDistributed(Dense(JOINTS*DIMS, activation='sigmoid'))(decoder_outputs)
+  outputs = TimeDistributed(Dense(JOINTS*DIMS))(decoder_outputs)
 
   outputs = Reshape(target_shape=(SEQUENCES, JOINTS, DIMS))(outputs)
 

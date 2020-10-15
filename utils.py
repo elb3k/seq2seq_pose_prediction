@@ -27,16 +27,17 @@ def preprocess(df):
   for _, row in df.iterrows():
     data = row["data"]
     for i in range(len(data)-60):
-      x.append( np.copy(data[i : i+30]) )
-      y.append( np.copy(data[i+30 : i+60]) )
+      last = np.copy(data[i+29])
+      x.append( np.copy(data[i : i+30]) - last )
+      y.append( np.copy(data[i+30 : i+60]) - last )
 
   x = np.asarray(x)
-  x[:, :, :, 0] = (x[:, :, :, 0] - 960.0)/960.0
-  x[:, :, :, 1] = (x[:, :, :, 1] - 540.0)/540.0
+  # x[:, :, :, 0] = (x[:, :, :, 0] - 960.0)/960.0
+  # x[:, :, :, 1] = (x[:, :, :, 1] - 540.0)/540.0
 
   y = np.asarray(y)
-  y[:, :, :, 0] = (y[:, :, :, 0] - 960.0)/960.0
-  y[:, :, :, 1] = (y[:, :, :, 1] - 540.0)/540.0
+  # y[:, :, :, 0] = (y[:, :, :, 0] - 960.0)/960.0
+  # y[:, :, :, 1] = (y[:, :, :, 1] - 540.0)/540.0
   
   decoder_input = np.zeros(x.shape, dtype="float32")
 
