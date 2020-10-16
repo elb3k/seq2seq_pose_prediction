@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Input, Dense, LSTM, TimeDistributed, Reshape
+from tensorflow.keras.layers import Input, Dense, LSTM, TimeDistributed, Reshape, Flatten
 
 
 def seq2seq_model(SEQUENCES=75, JOINTS=17, DIMS=2, HIDDEN_DIM=[512, 256, 128], EMBEDDING_SIZE=128):
@@ -40,8 +40,11 @@ def seq2seq_model(SEQUENCES=75, JOINTS=17, DIMS=2, HIDDEN_DIM=[512, 256, 128], E
     decoder_LSTM = LSTM(HIDDEN_DIM[i], return_state=True, return_sequences=True)
     decoder_outputs, _, _ = decoder_LSTM(decoder_outputs, initial_state=[state_h, state_c])
   
+  outputs = Flatten()(decoder_outputs)
 
-  outputs = TimeDistributed(Dense(JOINTS*DIMS))(decoder_outputs)
+  outputs = Dense(4096)(outputs)
+
+  outputs = Dense(SEQUENCES*JOINTS*DIMS)(outputs)
 
   outputs = Reshape(target_shape=(SEQUENCES, JOINTS, DIMS))(outputs)
 
