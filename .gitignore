@@ -4,3 +4,5 @@ log/*
 *.pkl
 
 .vscode
+
+*.avi

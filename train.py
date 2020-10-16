@@ -28,4 +28,4 @@ checkpoint = ModelCheckpoint("weights/v1/weights_{epoch:03d}.h5")
 
 history = model.fit(train_x, train_y, batch_size=batch_size, epochs=epochs,
   callbacks=[tensorboard, checkpoint],
-  validation_data=(val_x, val_y))
+  validation_data=(val_x, val_y), shuffle=True)
