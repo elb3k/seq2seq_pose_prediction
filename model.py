@@ -26,7 +26,7 @@ def seq2seq_model(SEQUENCES=75, JOINTS=17, DIMS=2, HIDDEN_DIM=[512, 256, 128], E
 
 
   # First LSTM
-  encoder_LSTM = LSTM(HIDDEN_DIM[0], return_state=True)
+  encoder_LSTM = LSTM(HIDDEN_DIM[0], return_state=True, return_sequences=True)
   encoder_outputs, state_h, state_c = encoder_LSTM(encoder_embedding)
   
   decoder_LSTM = LSTM(HIDDEN_DIM[0], return_state=True, return_sequences=True)
@@ -34,7 +34,7 @@ def seq2seq_model(SEQUENCES=75, JOINTS=17, DIMS=2, HIDDEN_DIM=[512, 256, 128], E
 
   # Last LSTMs
   for i in range(1, LAYERS):
-    encoder_LSTM = LSTM(HIDDEN_DIM[i], return_state=True)
+    encoder_LSTM = LSTM(HIDDEN_DIM[i], return_state=True, return_sequences=True)
     encoder_outputs, state_h, state_c = encoder_LSTM(encoder_outputs)
     
     decoder_LSTM = LSTM(HIDDEN_DIM[i], return_state=True, return_sequences=True)
