@@ -1,5 +1,5 @@
 import numpy as np
-import tensorflow as tf
+import torch
 import pandas as pd
 
 def load_dataset(path="dev2.pkl"):
@@ -27,28 +27,25 @@ def preprocess(df):
   for _, row in df.iterrows():
     data = row["data"]
     for i in range(len(data)-150):
-      last = np.copy(data[i+74])
-      x.append( np.copy(data[i : i+75]) - last )
-      y.append( np.copy(data[i+75 : i+150]) - last )
+      x.append( np.copy(data[i : i+75]) )
+      y.append( np.copy(data[i+75 : i+150]) )
 
   x = np.asarray(x)
-  # x[:, :, :, 0] = (x[:, :, :, 0] - 960.0)/960.0
-  # x[:, :, :, 1] = (x[:, :, :, 1] - 540.0)/540.0
+  x[:, :, :, 0] = (x[:, :, :, 0] - 960.0)/960.0
+  x[:, :, :, 1] = (x[:, :, :, 1] - 540.0)/540.0
 
   y = np.asarray(y)
-  # y[:, :, :, 0] = (y[:, :, :, 0] - 960.0)/960.0
-  # y[:, :, :, 1] = (y[:, :, :, 1] - 540.0)/540.0
+  y[:, :, :, 0] = (y[:, :, :, 0] - 960.0)/960.0
+  y[:, :, :, 1] = (y[:, :, :, 1] - 540.0)/540.0
   
-  decoder_input = np.zeros(x.shape, dtype="float32")
+  return x, y
 
-  return (x, decoder_input), y
-
-def loss(y_true, y_pred):
+def custom_loss(y_true, y_pred):
 
   diff = y_true - y_pred
-  diff = tf.math.reduce_sum(tf.math.square(diff), axis=-1)
-  diff = tf.math.sqrt(diff)
-  return tf.reduce_mean(diff)
+  diff = torch.sum(diff*diff, -1)
+  diff = torch.sqrt(diff)
+  return torch.mean(diff)
 
 def distance(y_true, y_pred):
 
