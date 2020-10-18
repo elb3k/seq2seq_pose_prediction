@@ -83,7 +83,7 @@ class GC_Block(nn.Module):
 
 
 class GCN(nn.Module):
-    def __init__(self, input_feature, hidden_feature, p_dropout, num_stage=1, node_n=34):
+    def __init__(self, input_feature, hidden_feature, p_dropout, num_stage=1, keypoints=17, dims=2):
         """
         :param input_feature: num of input feature
         :param hidden_feature: num of hidden feature
@@ -92,7 +92,11 @@ class GCN(nn.Module):
         :param node_n: number of nodes in graph
         """
         super(GCN, self).__init__()
+        self.input_feature = input_feature
         self.num_stage = num_stage
+        self.keypoints = keypoints
+        self.dims = dims
+        node_n = keypoints * dims
 
         self.gc1 = GraphConvolution(input_feature, hidden_feature, node_n=node_n)
         self.bn1 = nn.BatchNorm1d(node_n * hidden_feature)
@@ -109,14 +113,13 @@ class GCN(nn.Module):
         self.act_f = nn.Tanh()
 
     def forward(self, x):
+        x = torch.reshape(x, (x.shape[0], self.input_feature, self.keypoints * self.dims))
 
         x = x.permute(0, 2, 1)
 
         y = self.gc1(x)
         b, n, f = y.shape
 
-        print(x.shape, y.shape)
-        
         y = self.bn1(y.view(b, -1)).view(b, n, f)
         y = self.act_f(y)
         y = self.do(y)
@@ -127,4 +130,6 @@ class GCN(nn.Module):
         y = self.gc7(y)
         y = y + x
 
-        return y.permute(0, 2, 1)
+        y = y.permute(0, 2, 1)
+        y = torch.reshape(y, (y.shape[0], self.input_feature, self.keypoints, self.dims))
+        return y

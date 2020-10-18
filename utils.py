@@ -45,11 +45,11 @@ def custom_loss(y_true, y_pred):
   diff = y_true - y_pred
   diff = torch.sum(diff*diff, -1)
   diff = torch.sqrt(diff)
-  return torch.mean(diff)
+  return torch.mean(diff) * np.sqrt(1920**2+1080**2)
 
 def distance(y_true, y_pred):
 
   diff = y_true - y_pred
   diff = np.sum(np.square(diff), axis=-1)
   diff = np.sqrt(diff)
-  return np.mean(diff)
+  return np.mean(diff) * np.sqrt(1920**2+1080**2)

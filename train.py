@@ -1,4 +1,7 @@
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"]="1,2"
+
 from utils import *
 from model import *
 
@@ -10,7 +13,7 @@ from tqdm import tqdm
 # Hyper Parameters
 batch_size=64
 epochs=100
-learning_rate = 0.001
+learning_rate = 0.0001
 
 # Parameters
 TIME_SEQUENCES = 75
@@ -22,7 +25,7 @@ NUM_STAGE = 12
 log_dir = "log/v1"
 weight_file = "weights/v1/weight_%03d.pth"
 
-use_cuda = False
+use_cuda = True
 # Model
 model = GCN(TIME_SEQUENCES, HIDDEN_FEATURES, DROPOUT, NUM_STAGE)
 
@@ -50,7 +53,7 @@ val_dataset = TensorDataset(val_x, val_y)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
 
 # SGD optimizer
-optimizer = optim.SGD(learning_rate)
+optimizer = optim.SGD(model.parameters(), learning_rate)
 
 # Tensorboard writer
 tensorboard = SummaryWriter(log_dir)
@@ -65,7 +68,7 @@ for epoch in range(epochs):
     
     optimizer.zero_grad()
 
-    loss = custom_loss(model(batch_x), batch_y)
+    loss = custom_loss(model(batch_x.cuda()), batch_y.cuda())
 
     loss.backward()
     optimizer.step()
@@ -81,7 +84,7 @@ for epoch in range(epochs):
     val_loss = 0.0
     for i, (batch_x, batch_y) in enumerate(val_loader):
       
-      loss = custom_loss(model(batch_x), batch_y)
+      loss = custom_loss(model(batch_x.cuda()), batch_y.cuda())
       val_loss += loss.data.item()
 
     val_loss /= (i+1)
